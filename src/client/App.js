@@ -4,10 +4,8 @@ import openSocket from 'socket.io-client';
 import Chart from './Chart';
 import OrderBook from './OrderBook';
 
-const socket = openSocket('http://localhost:8080');
-// const poloniex = 'Poloniex';
-// const bittrex = 'Bittrex';
-// const binance = 'Binance';
+//const socket = openSocket('http://localhost:8080');
+const socket = openSocket('http://159.65.75.193:8080');
 const polling = 3000;
 
 export default class App extends Component {
