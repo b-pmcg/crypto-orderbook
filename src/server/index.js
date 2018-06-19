@@ -50,15 +50,15 @@ io.on('connection', (client) => {
 });
 
 // routes (works):
-// app.get('/api/getOrderBookPoloniex', (req, res) => {
-//   const options = {
-//     uri: 'https://poloniex.com/public?command=returnOrderBook&currencyPair=BTC_NXT&depth=20',
-//     headers: { 'User-Agent': 'Request-Promise' },
-//     json: true
-//   };
-//   request(options).then((x) => {
-//     res.send(x);
-//   });
-// });
+app.get('/api/getOrderBookPoloniex', (req, res) => {
+  const options = {
+    uri: 'https://poloniex.com/public?command=returnOrderBook&currencyPair=BTC_NXT&depth=20',
+    headers: { 'User-Agent': 'Request-Promise' },
+    json: true
+  };
+  request(options).then((x) => {
+    res.send(x);
+  });
+});
 
 server.listen(port, () => console.log(`Socket listening on port ${port}`));
