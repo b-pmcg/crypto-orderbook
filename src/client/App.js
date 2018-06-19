@@ -28,7 +28,11 @@ export default class App extends Component {
         secondary: 'LTC'
       },
       orderData: [],
-      displayed: []
+      displayed: [],
+      primaryCoins: [
+          'BTC',
+          'ETH'
+      ]
     };
   }
 
@@ -200,9 +204,26 @@ export default class App extends Component {
     return array.filter(e => e !== element);
   }
 
+  updateValue(value) {
+      console.log(value);
+    this.setState({
+      tradingPair: {
+          primary: value
+        }});
+  }
+
   render() {
     return (
       <div>
+          <div className='select'>
+          <span>Select Primary Trading Pair</span>
+          <select value={this.state.selectedValue} onChange={(e) => this.updateValue(+e.target.value)}>
+          <option value={0}>Default Value</option>
+          {
+            primaryCoins.map((item, idx) => <option value={item} key={idx}>{"Example " + item}</option>)
+          }
+            </select>
+          </div>
         <button onClick={this.addPoloniex.bind(this)} />
         <button onClick={this.removePoloniex.bind(this)} />
         <button onClick={this.addBittrex.bind(this)} />
