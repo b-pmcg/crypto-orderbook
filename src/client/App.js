@@ -32,7 +32,14 @@ export default class App extends Component {
       primaryCoins: [
           'BTC',
           'ETH'
-      ]
+      ],
+      secondaryCoins: [
+        'ETH',
+        'LTC',
+        'DOG',
+        'XRP',
+        'EOS'
+    ]
     };
   }
 
@@ -204,23 +211,41 @@ export default class App extends Component {
     return array.filter(e => e !== element);
   }
 
-  updateValue(value) {
+  updatePrimary(value) {
       console.log(value);
     this.setState({
       tradingPair: {
-          primary: value
+          primary: value,
+          secondary: this.state.tradingPair.secondary
         }});
   }
 
+  updateSecondary(value) {
+    console.log(value);
+  this.setState({
+    tradingPair: {
+        primary: this.state.tradingPair.primary,
+        secondary: value
+      }});
+}
+
   render() {
+      console.log(this.state.tradingPair)
     return (
       <div>
           <div className='select'>
           <span>Select Primary Trading Pair</span>
-          <select value={this.state.selectedValue} onChange={(e) => this.updateValue(+e.target.value)}>
+          <select value={this.state.tradingPair.primary} onChange={(e) => this.updatePrimary(e.target.value)}>
           <option value={0}>Default Value</option>
           {
-            primaryCoins.map((item, idx) => <option value={item} key={idx}>{"Example " + item}</option>)
+            this.state.primaryCoins.map((item, idx) => <option value={item} key={idx}>{"Example " + item}</option>)
+          }
+            </select>
+            <span>Select Secondary Trading Pair</span>
+          <select value={this.state.tradingPair.secondary} onChange={(e) => this.updateSecondary(e.target.value)}>
+          <option value={0}>Default Value</option>
+          {
+            this.state.secondaryCoins.map((item, idx) => <option value={item} key={idx}>{"Example " + item}</option>)
           }
             </select>
           </div>
