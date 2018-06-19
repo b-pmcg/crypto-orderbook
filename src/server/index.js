@@ -6,7 +6,7 @@ const server = http.createServer(app);
 const io = require('socket.io').listen(server);
 const request = require('request-promise');
 
-const port = 8080;
+const port = 5000;
 
 io.on('connection', (client) => {
   client.on('getPoloniexData', (interval, pair) => {
