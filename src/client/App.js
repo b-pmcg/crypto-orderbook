@@ -166,11 +166,21 @@ export default class App extends Component {
     let orderData = [...this.state.orderData];
     const exDisplayed = this.state.displayed;
 
-    if (exDisplayed.indexOf('bittrex') === -1) {
-      orderData = [];
-    } else {
-      orderData = [...this.state.ordersBittrex];
-    }
+    // if (exDisplayed.indexOf('bittrex') === -1) {
+    //   orderData = [];
+    // } else {
+    //   orderData = [...this.state.ordersBittrex];
+    // }
+
+    if ((exDisplayed.indexOf('binance') === -1) && (exDisplayed.indexOf('bittrex') === -1)) {
+        orderData = [];
+        // px is there and bx is not there
+      } else if ((exDisplayed.indexOf('binance') !== -1) && (exDisplayed.indexOf('bittrex') === -1)) {
+        orderData = [...this.state.ordersPoloniex];
+        // px is there and bx is there
+      } else if ((exDisplayed.indexOf('binance') !== -1) && (exDisplayed.indexOf('bittrex') !== -1)) {
+          orderData = [...this.state.ordersPoloniex, ...this.state.ordersBittrex];
+      }
 
     const displayed = this.arrayRemove(exDisplayed, 'poloniex');
     console.log('displayed out', displayed);
@@ -181,11 +191,21 @@ export default class App extends Component {
     let orderData = [...this.state.orderData];
     const exDisplayed = this.state.displayed;
 
-    if (exDisplayed.indexOf('poloniex') === -1) {
-      orderData = [];
-    } else {
-      orderData = [...this.state.ordersPoloniex];
-    }
+    // if (exDisplayed.indexOf('poloniex') === -1) {
+    //   orderData = [];
+    // } else {
+    //   orderData = [...this.state.ordersPoloniex];
+    // }
+        // none are there
+    if ((exDisplayed.indexOf('poloniex') === -1) && (exDisplayed.indexOf('binance') === -1)) {
+        orderData = [];
+        // px is there and bn is not there
+      } else if ((exDisplayed.indexOf('poloniex') !== -1) && (exDisplayed.indexOf('binance') === -1)) {
+        orderData = [...this.state.ordersPoloniex];
+        // px is there and bx is there
+      } else if ((exDisplayed.indexOf('poloniex') !== -1) && (exDisplayed.indexOf('binance') !== -1)) {
+          orderData = [...this.state.ordersPoloniex, ...this.state.ordersBittrex];
+      }
 
     const displayed = this.arrayRemove(exDisplayed, 'bittrex');
     console.log('displayed out', displayed);
@@ -196,13 +216,17 @@ export default class App extends Component {
     let orderData = [...this.state.orderData];
     const exDisplayed = this.state.displayed;
 
-    if (exDisplayed.indexOf('poloniex') === -1) {
+    if ((exDisplayed.indexOf('poloniex') === -1) && (exDisplayed.indexOf('bittrex') === -1)) {
       orderData = [];
-    } else {
+      // px is there and bx is not there
+    } else if ((exDisplayed.indexOf('poloniex') !== -1) && (exDisplayed.indexOf('bittrex') === -1)) {
       orderData = [...this.state.ordersPoloniex];
+      // px is there and bx is there
+    } else if ((exDisplayed.indexOf('poloniex') !== -1) && (exDisplayed.indexOf('bittrex') !== -1)) {
+        orderData = [...this.state.ordersPoloniex, ...this.state.ordersBittrex];
     }
 
-    const displayed = this.arrayRemove(exDisplayed, 'bittrex');
+    const displayed = this.arrayRemove(exDisplayed, 'binance');
     console.log('displayed out', displayed);
     this.setState({ orderData, displayed });
   }
@@ -257,6 +281,7 @@ export default class App extends Component {
         <button onClick={this.removeBinance.bind(this)} />
         <div className="combined-container">
           <h1>Combined</h1>
+          <h2>Currently displaying {this.state.displayed.map(x => <span>{x}</span>)}</h2>
           <OrderBook orderData={this.state.orderData.sort((a, b) => a.Rate - b.Rate)} />
           <h1>Poloniex</h1>
           <OrderBook orderData={this.state.ordersPoloniex.sort((a, b) => a.Rate - b.Rate)} />
