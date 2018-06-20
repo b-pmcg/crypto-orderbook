@@ -7,16 +7,16 @@ const io = require('socket.io').listen(server);
 const request = require('request-promise');
 
 // app.use(cors({ origin: '*' }));
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Origin', 'http://159.65.75.193');
-//   res.header('Access-Control-Allow-Origin', 'http://159.65.75.193/');
-//   res.header('Access-Control-Allow-Origin', 'http://philbain.com');
-//   res.header('Access-Control-Allow-Origin', 'http://philbain.com/');
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-//   res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-//   next();
-// });
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', 'http://159.65.75.193');
+  res.header('Access-Control-Allow-Origin', 'http://159.65.75.193/');
+  res.header('Access-Control-Allow-Origin', 'http://philbain.com');
+  res.header('Access-Control-Allow-Origin', 'http://philbain.com/');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  next();
+});
 
 const port = 8080;
 
