@@ -24,7 +24,7 @@ export default class App extends Component {
       ordersBittrex: [],
       ordersBinance: [],
       pairPrimary: 'BTC',
-      pairSecondary: 'LTC',
+      pairSecondary: 'ETH',
       orderData: [],
       displayed: [],
       primaryCoins: ['BTC', 'ETH'],
@@ -204,11 +204,17 @@ export default class App extends Component {
     return (
       <div>
         <div className="container">
-          <h1>Poloniex Live Updating</h1>
+          <h1>
+            Poloniex [{this.state.pairPrimary}/{this.state.pairSecondary}] Live Updating
+          </h1>
           <OrderBook orderData={this.state.ordersPoloniex.sort((a, b) => a.Rate - b.Rate)} />
-          <h1>Bittrex Live Updating</h1>
+          <h1>
+            Bittrex [{this.state.pairPrimary}/{this.state.pairSecondary}] Live Updating
+          </h1>
           <OrderBook orderData={this.state.ordersBittrex.sort((a, b) => a.Rate - b.Rate)} />
-          <h1>Binance Live Updating</h1>
+          <h1>
+            Binance [{this.state.pairPrimary}/{this.state.pairSecondary}] Live Updating
+          </h1>
           <OrderBook orderData={this.state.ordersBinance.sort((a, b) => a.Rate - b.Rate)} />
           <h1>Combine Exchanges</h1>
           <button onClick={this.addPoloniex.bind(this)}>Add Poloniex</button>
