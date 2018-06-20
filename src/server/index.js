@@ -45,10 +45,9 @@ io.on('connection', (client) => {
   });
 
   client.on('getBinanceData', (interval, coinPri, coinSec) => {
-    console.log('hi im binance');
     setInterval(() => {
       const options = {
-        uri: 'https://api.binance.com/api/v1/depth?symbol=BTCETH&limit=20',
+        uri: `https://api.binance.com/api/v1/depth?symbol=${coinSec}${coinPri}&limit=20`,
         headers: { 'User-Agent': 'Request-Promise' },
         json: true
       };
