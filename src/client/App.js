@@ -4,9 +4,9 @@ import openSocket from 'socket.io-client';
 import Chart from './Chart';
 import OrderBook from './OrderBook';
 
-// const socket = openSocket('http://localhost:8080');
+const socket = openSocket('http://localhost:8080');
 // const socket = openSocket('http://159.65.75.193:8080');
-const socket = openSocket('http://159.65.75.193');
+// const socket = openSocket('http://159.65.75.193');
 const polling = 3000;
 
 export default class App extends Component {
@@ -23,23 +23,16 @@ export default class App extends Component {
       ordersPoloniex: [],
       ordersBittrex: [],
       ordersBinance: [],
-      tradingPair: {
-        primary: 'BTC',
-        secondary: 'LTC'
-      },
+      //   tradingPair: {
+      //     primary: 'BTC',
+      //     secondary: 'LTC'
+      //   },
+      pairPrimary: 'BTC',
+      pairSecondary: 'LTC',
       orderData: [],
       displayed: [],
-      primaryCoins: [
-          'BTC',
-          'ETH'
-      ],
-      secondaryCoins: [
-        'ETH',
-        'LTC',
-        'DOG',
-        'XRP',
-        'EOS'
-    ]
+      primaryCoins: ['BTC', 'ETH'],
+      secondaryCoins: ['ETH', 'LTC', 'DOG', 'XRP', 'EOS']
     };
   }
 
@@ -77,7 +70,7 @@ export default class App extends Component {
         });
       }
     });
-    socket.emit('getPoloniexData', polling, this.state.tradingPair);
+    socket.emit('getPoloniexData', polling, this.state.pairPrimary, this.state.pairSecondary);
   }
 
   subToBittrex() {
@@ -101,7 +94,7 @@ export default class App extends Component {
         });
       }
     });
-    socket.emit('getBittrexData', 5000, this.state.tradingPair);
+    socket.emit('getBittrexData', 5000, this.state.pairPrimary, this.state.pairSecondary);
   }
 
   subToBinance() {
@@ -132,7 +125,7 @@ export default class App extends Component {
         });
       }
     });
-    socket.emit('getBinanceData', 5000, this.state.tradingPair);
+    socket.emit('getBinanceData', 5000, this.state.pairPrimary, this.state.pairSecondary);
   }
 
   addPoloniex() {
@@ -172,15 +165,15 @@ export default class App extends Component {
     //   orderData = [...this.state.ordersBittrex];
     // }
 
-    if ((exDisplayed.indexOf('binance') === -1) && (exDisplayed.indexOf('bittrex') === -1)) {
-        orderData = [];
-        // px is there and bx is not there
-      } else if ((exDisplayed.indexOf('binance') !== -1) && (exDisplayed.indexOf('bittrex') === -1)) {
-        orderData = [...this.state.ordersPoloniex];
-        // px is there and bx is there
-      } else if ((exDisplayed.indexOf('binance') !== -1) && (exDisplayed.indexOf('bittrex') !== -1)) {
-          orderData = [...this.state.ordersPoloniex, ...this.state.ordersBittrex];
-      }
+    if (exDisplayed.indexOf('binance') === -1 && exDisplayed.indexOf('bittrex') === -1) {
+      orderData = [];
+      // px is there and bx is not there
+    } else if (exDisplayed.indexOf('binance') !== -1 && exDisplayed.indexOf('bittrex') === -1) {
+      orderData = [...this.state.ordersPoloniex];
+      // px is there and bx is there
+    } else if (exDisplayed.indexOf('binance') !== -1 && exDisplayed.indexOf('bittrex') !== -1) {
+      orderData = [...this.state.ordersPoloniex, ...this.state.ordersBittrex];
+    }
 
     const displayed = this.arrayRemove(exDisplayed, 'poloniex');
     console.log('displayed out', displayed);
@@ -196,16 +189,16 @@ export default class App extends Component {
     // } else {
     //   orderData = [...this.state.ordersPoloniex];
     // }
-        // none are there
-    if ((exDisplayed.indexOf('poloniex') === -1) && (exDisplayed.indexOf('binance') === -1)) {
-        orderData = [];
-        // px is there and bn is not there
-      } else if ((exDisplayed.indexOf('poloniex') !== -1) && (exDisplayed.indexOf('binance') === -1)) {
-        orderData = [...this.state.ordersPoloniex];
-        // px is there and bx is there
-      } else if ((exDisplayed.indexOf('poloniex') !== -1) && (exDisplayed.indexOf('binance') !== -1)) {
-          orderData = [...this.state.ordersPoloniex, ...this.state.ordersBittrex];
-      }
+    // none are there
+    if (exDisplayed.indexOf('poloniex') === -1 && exDisplayed.indexOf('binance') === -1) {
+      orderData = [];
+      // px is there and bn is not there
+    } else if (exDisplayed.indexOf('poloniex') !== -1 && exDisplayed.indexOf('binance') === -1) {
+      orderData = [...this.state.ordersPoloniex];
+      // px is there and bx is there
+    } else if (exDisplayed.indexOf('poloniex') !== -1 && exDisplayed.indexOf('binance') !== -1) {
+      orderData = [...this.state.ordersPoloniex, ...this.state.ordersBittrex];
+    }
 
     const displayed = this.arrayRemove(exDisplayed, 'bittrex');
     console.log('displayed out', displayed);
@@ -216,14 +209,14 @@ export default class App extends Component {
     let orderData = [...this.state.orderData];
     const exDisplayed = this.state.displayed;
 
-    if ((exDisplayed.indexOf('poloniex') === -1) && (exDisplayed.indexOf('bittrex') === -1)) {
+    if (exDisplayed.indexOf('poloniex') === -1 && exDisplayed.indexOf('bittrex') === -1) {
       orderData = [];
       // px is there and bx is not there
-    } else if ((exDisplayed.indexOf('poloniex') !== -1) && (exDisplayed.indexOf('bittrex') === -1)) {
+    } else if (exDisplayed.indexOf('poloniex') !== -1 && exDisplayed.indexOf('bittrex') === -1) {
       orderData = [...this.state.ordersPoloniex];
       // px is there and bx is there
-    } else if ((exDisplayed.indexOf('poloniex') !== -1) && (exDisplayed.indexOf('bittrex') !== -1)) {
-        orderData = [...this.state.ordersPoloniex, ...this.state.ordersBittrex];
+    } else if (exDisplayed.indexOf('poloniex') !== -1 && exDisplayed.indexOf('bittrex') !== -1) {
+      orderData = [...this.state.ordersPoloniex, ...this.state.ordersBittrex];
     }
 
     const displayed = this.arrayRemove(exDisplayed, 'binance');
@@ -236,43 +229,38 @@ export default class App extends Component {
   }
 
   updatePrimary(value) {
-      console.log(value);
-    this.setState({
-      tradingPair: {
-          primary: value,
-          secondary: this.state.tradingPair.secondary
-        }});
+    console.log(value);
+    this.setState({ pairPrimary: value });
   }
 
   updateSecondary(value) {
     console.log(value);
-  this.setState({
-    tradingPair: {
-        primary: this.state.tradingPair.primary,
-        secondary: value
-      }});
-}
+    this.setState({ pairSecondary: value });
+  }
 
   render() {
-      console.log(this.state.tradingPair)
     return (
       <div>
-          <div className='select'>
+        <div className="select">
           <span>Select Primary Trading Pair</span>
-          <select value={this.state.tradingPair.primary} onChange={(e) => this.updatePrimary(e.target.value)}>
-          <option value={0}>Default Value</option>
-          {
-            this.state.primaryCoins.map((item, idx) => <option value={item} key={idx}>{"Example " + item}</option>)
-          }
-            </select>
-            <span>Select Secondary Trading Pair</span>
-          <select value={this.state.tradingPair.secondary} onChange={(e) => this.updateSecondary(e.target.value)}>
-          <option value={0}>Default Value</option>
-          {
-            this.state.secondaryCoins.map((item, idx) => <option value={item} key={idx}>{"Example " + item}</option>)
-          }
-            </select>
-          </div>
+          <select onChange={e => this.updatePrimary(e.target.value)}>
+            <option value={0}>Default Value</option>
+            {this.state.primaryCoins.map((item, idx) => (
+              <option value={item} key={idx}>
+                {`Example ${item}`}
+              </option>
+            ))}
+          </select>
+          <span>Select Secondary Trading Pair</span>
+          <select onChange={e => this.updateSecondary(e.target.value)}>
+            <option value={0}>Default Value</option>
+            {this.state.secondaryCoins.map((item, idx) => (
+              <option value={item} key={idx}>
+                {`Example ${item}`}
+              </option>
+            ))}
+          </select>
+        </div>
         <button onClick={this.addPoloniex.bind(this)} />
         <button onClick={this.removePoloniex.bind(this)} />
         <button onClick={this.addBittrex.bind(this)} />

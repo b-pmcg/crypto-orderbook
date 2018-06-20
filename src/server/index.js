@@ -1,12 +1,12 @@
-// const express = require('express');
-// const http = require('http');
+const express = require('express');
+const http = require('http');
 
-// const app = express();
-// const server = http.createServer(app);
-// const io = require('socket.io').listen(server);
-// const request = require('request-promise');
+const app = express();
+const server = http.createServer(app);
+const io = require('socket.io').listen(server);
+const request = require('request-promise');
 
-// // app.use(cors({ origin: '*' }));
+// app.use(cors({ origin: '*' }));
 // app.use((req, res, next) => {
 //   res.header('Access-Control-Allow-Origin', '*');
 //   res.header('Access-Control-Allow-Origin', 'http://159.65.75.193');
@@ -18,50 +18,46 @@
 //   next();
 // });
 
-// const port = 8080;
+const port = 8080;
 
-// io.on('connection', (client) => {
-//   client.on('getPoloniexData', (interval, pair) => {
-//     setInterval(() => {
-//       const options = {
-//         uri: `https://poloniex.com/public?command=returnOrderBook&currencyPair=${pair.primary}_${
-//           pair.secondary
-//         }&depth=20`,
-//         headers: { 'User-Agent': 'Request-Promise' },
-//         json: true
-//       };
-//       request(options).then(res => client.emit('pushPoloniexData', res));
-//     }, interval);
-//   });
+io.on('connection', (client) => {
+  client.on('getPoloniexData', (interval, coinPri, coinSec) => {
+    setInterval(() => {
+      const options = {
+        uri: `https://poloniex.com/public?command=returnOrderBook&currencyPair=${coinPri}_${coinSec}&depth=20`,
+        headers: { 'User-Agent': 'Request-Promise' },
+        json: true
+      };
+      request(options).then(res => client.emit('pushPoloniexData', res));
+    }, interval);
+  });
 
-//   client.on('getBittrexData', (interval, pair) => {
-//     setInterval(() => {
-//       const options = {
-//         uri: `https://bittrex.com/api/v1.1/public/getorderbook?market=${pair.primary}-${
-//           pair.secondary
-//         }&type=both`,
-//         headers: { 'User-Agent': 'Request-Promise' },
-//         json: true
-//       };
-//       request(options).then(res => client.emit('pushBittrexData', res.result));
-//     }, interval);
-//   });
+  client.on('getBittrexData', (interval, coinPri, coinSec) => {
+    setInterval(() => {
+      const options = {
+        uri: `https://bittrex.com/api/v1.1/public/getorderbook?market=${coinPri}-${coinSec}&type=both`,
+        headers: { 'User-Agent': 'Request-Promise' },
+        json: true
+      };
+      console.log('set interval ex uri:', options.uri);
+      request(options).then(res => client.emit('pushBittrexData', res.result));
+    }, interval);
+  });
 
-//   client.on('getBinanceData', (interval, pair) => {
-//     setInterval(() => {
-//       const options = {
-//         uri: `https://api.binance.com/api/v1/depth?symbol=${pair.secondary}${
-//           pair.primary
-//         }&limit=20`,
-//         headers: { 'User-Agent': 'Request-Promise' },
-//         json: true
-//       };
-//       request(options).then(res => client.emit('pushBinanceData', res));
-//     }, interval);
-//   });
-// });
+  client.on('getBinanceData', (interval, coinPri, coinSec) => {
+    console.log('hi im binance');
+    setInterval(() => {
+      const options = {
+        uri: 'https://api.binance.com/api/v1/depth?symbol=BTCETH&limit=20',
+        headers: { 'User-Agent': 'Request-Promise' },
+        json: true
+      };
+      request(options).then(res => client.emit('pushBinanceData', res));
+    }, interval);
+  });
+});
 
-// // routes (works):
+// routes (works):
 // app.get('/api/getOrderBookPoloniex', (req, res) => {
 //   const options = {
 //     uri: 'https://poloniex.com/public?command=returnOrderBook&currencyPair=BTC_NXT&depth=20',
@@ -73,4 +69,4 @@
 //   });
 // });
 
-// server.listen(port, () => console.log(`Socket listening on port ${port}`));
+server.listen(port, () => console.log(`Socket listening on port ${port}`));
