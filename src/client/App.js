@@ -204,6 +204,13 @@ export default class App extends Component {
     return (
       <div>
         <div className="container">
+          <OrderBook orderData={this.state.orderData.sort((a, b) => a.Rate - b.Rate)} />
+          <h1>Poloniex Live Updating</h1>
+          <OrderBook orderData={this.state.ordersPoloniex.sort((a, b) => a.Rate - b.Rate)} />
+          <h1>Bittrex Live Updating</h1>
+          <OrderBook orderData={this.state.ordersBittrex.sort((a, b) => a.Rate - b.Rate)} />
+          <h1>Binance Live Updating</h1>
+          <OrderBook orderData={this.state.ordersBinance.sort((a, b) => a.Rate - b.Rate)} />
           <h1>Combine Exchanges</h1>
           <button onClick={this.addPoloniex.bind(this)}>Add Poloniex</button>
           <button onClick={this.removePoloniex.bind(this)}>Remove Poloniex</button>
@@ -212,13 +219,6 @@ export default class App extends Component {
           <button onClick={this.addBinance.bind(this)}>Add Binance</button>
           <button onClick={this.removeBinance.bind(this)}>Remove Binance</button>
           <h2>Currently displaying: {this.state.displayed.map(x => <span>{x} </span>)}</h2>
-          <OrderBook orderData={this.state.orderData.sort((a, b) => a.Rate - b.Rate)} />
-          <h1>Poloniex Live Updating</h1>
-          <OrderBook orderData={this.state.ordersPoloniex.sort((a, b) => a.Rate - b.Rate)} />
-          <h1>Bittrex Live Updating</h1>
-          <OrderBook orderData={this.state.ordersBittrex.sort((a, b) => a.Rate - b.Rate)} />
-          <h1>Binance Live Updating</h1>
-          <OrderBook orderData={this.state.ordersBinance.sort((a, b) => a.Rate - b.Rate)} />
         </div>
       </div>
     );
