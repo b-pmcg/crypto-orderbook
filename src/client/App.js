@@ -7,7 +7,7 @@ import OrderBook from './OrderBook';
 const socket = openSocket('http://localhost:8080');
 // const socket = openSocket('http://159.65.75.193:8080');
 // const socket = openSocket('http://159.65.75.193');
-const polling = 3000;
+const polling = 1000;
 
 export default class App extends Component {
   constructor(props) {
@@ -23,28 +23,22 @@ export default class App extends Component {
       ordersPoloniex: [],
       ordersBittrex: [],
       ordersBinance: [],
-      //   tradingPair: {
-      //     primary: 'BTC',
-      //     secondary: 'LTC'
-      //   },
       pairPrimary: 'BTC',
-      pairSecondary: 'LTC',
+      pairSecondary: 'ETH',
       orderData: [],
       displayed: [],
-      primaryCoins: ['BTC', 'ETH'],
-      secondaryCoins: ['ETH', 'LTC', 'DOG', 'XRP', 'EOS']
+      primaryCoins: ['BTC'],
+      secondaryCoins: ['ETH', 'LTC', 'XRP', 'EOS']
     };
   }
 
   componentDidMount() {
-    this.subToPoloniex();
-    this.subToBittrex();
-    this.subToBinance();
+    this.subscribeAll();
   }
 
   subToPoloniex() {
     socket.on('pushPoloniexData', (orderbook) => {
-      if (orderbook) {
+      if (orderbook.asks && orderbook.bids) {
         const newAsksArray = [];
         const newBidsArray = [];
         orderbook.asks.map((ask) => {
@@ -70,6 +64,7 @@ export default class App extends Component {
         });
       }
     });
+    console.log('poloniex sub', this.state.pairSecondary);
     socket.emit('getPoloniexData', polling, this.state.pairPrimary, this.state.pairSecondary);
   }
 
@@ -94,7 +89,7 @@ export default class App extends Component {
         });
       }
     });
-    socket.emit('getBittrexData', 5000, this.state.pairPrimary, this.state.pairSecondary);
+    socket.emit('getBittrexData', polling, this.state.pairPrimary, this.state.pairSecondary);
   }
 
   subToBinance() {
@@ -125,7 +120,7 @@ export default class App extends Component {
         });
       }
     });
-    socket.emit('getBinanceData', 5000, this.state.pairPrimary, this.state.pairSecondary);
+    socket.emit('getBinanceData', polling, this.state.pairPrimary, this.state.pairSecondary);
   }
 
   addPoloniex() {
@@ -159,12 +154,6 @@ export default class App extends Component {
     let orderData = [...this.state.orderData];
     const exDisplayed = this.state.displayed;
 
-    // if (exDisplayed.indexOf('bittrex') === -1) {
-    //   orderData = [];
-    // } else {
-    //   orderData = [...this.state.ordersBittrex];
-    // }
-
     if (exDisplayed.indexOf('binance') === -1 && exDisplayed.indexOf('bittrex') === -1) {
       orderData = [];
       // px is there and bx is not there
@@ -183,12 +172,6 @@ export default class App extends Component {
   removeBittrex() {
     let orderData = [...this.state.orderData];
     const exDisplayed = this.state.displayed;
-
-    // if (exDisplayed.indexOf('poloniex') === -1) {
-    //   orderData = [];
-    // } else {
-    //   orderData = [...this.state.ordersPoloniex];
-    // }
     // none are there
     if (exDisplayed.indexOf('poloniex') === -1 && exDisplayed.indexOf('binance') === -1) {
       orderData = [];
@@ -228,29 +211,29 @@ export default class App extends Component {
     return array.filter(e => e !== element);
   }
 
-  updatePrimary(value) {
+  updateSecondary(value) {
+    socket.destroy();
     console.log(value);
-    this.setState({ pairPrimary: value });
+    this.setState({ pairSecondary: value }, () => this.subscribeAll());
   }
 
-  updateSecondary(value) {
-    console.log(value);
-    this.setState({ pairSecondary: value });
+  subscribeAll() {
+    console.log('suball');
+    this.subToPoloniex();
+    this.subToBittrex();
+    this.subToBinance();
+  }
+
+  socketOff() {
+    socket.destroy('pushPoloniexData');
+    socket.destroy('pushBittrexData');
+    socket.destroy('pushBinanceData');
   }
 
   render() {
     return (
       <div>
         <div className="select">
-          <span>Select Primary Trading Pair</span>
-          <select onChange={e => this.updatePrimary(e.target.value)}>
-            <option value={0}>Default Value</option>
-            {this.state.primaryCoins.map((item, idx) => (
-              <option value={item} key={idx}>
-                {`Example ${item}`}
-              </option>
-            ))}
-          </select>
           <span>Select Secondary Trading Pair</span>
           <select onChange={e => this.updateSecondary(e.target.value)}>
             <option value={0}>Default Value</option>
@@ -267,6 +250,7 @@ export default class App extends Component {
         <button onClick={this.removeBittrex.bind(this)} />
         <button onClick={this.addBinance.bind(this)} />
         <button onClick={this.removeBinance.bind(this)} />
+        <button onClick={this.socketOff.bind(this)} />
         <div className="combined-container">
           <h1>Combined</h1>
           <h2>Currently displaying {this.state.displayed.map(x => <span>{x}</span>)}</h2>

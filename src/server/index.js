@@ -21,13 +21,14 @@ const request = require('request-promise');
 const port = 8080;
 
 io.on('connection', (client) => {
-  client.on('getPoloniexData', (interval, coinPri, coinSec) => {
+  client.on('getPoloniexData', (interval, coinPri, coinSec, makeRequest) => {
     setInterval(() => {
       const options = {
         uri: `https://poloniex.com/public?command=returnOrderBook&currencyPair=${coinPri}_${coinSec}&depth=20`,
         headers: { 'User-Agent': 'Request-Promise' },
         json: true
       };
+      console.log('poloniex url:', options.uri);
       request(options).then(res => client.emit('pushPoloniexData', res));
     }, interval);
   });
@@ -39,7 +40,7 @@ io.on('connection', (client) => {
         headers: { 'User-Agent': 'Request-Promise' },
         json: true
       };
-      console.log('set interval ex uri:', options.uri);
+      console.log('bittrex url:', options.uri);
       request(options).then(res => client.emit('pushBittrexData', res.result));
     }, interval);
   });
@@ -48,16 +49,17 @@ io.on('connection', (client) => {
     console.log('hi im binance');
     setInterval(() => {
       const options = {
-        uri: 'https://api.binance.com/api/v1/depth?symbol=BTCETH&limit=20',
+        uri: `https://api.binance.com/api/v1/depth?symbol=${coinSec}${coinPri}&limit=20`,
         headers: { 'User-Agent': 'Request-Promise' },
         json: true
       };
+      console.log('binance url:', options.uri);
       request(options).then(res => client.emit('pushBinanceData', res));
     }, interval);
   });
 });
 
-// routes (works):
+// routes
 // app.get('/api/getOrderBookPoloniex', (req, res) => {
 //   const options = {
 //     uri: 'https://poloniex.com/public?command=returnOrderBook&currencyPair=BTC_NXT&depth=20',
